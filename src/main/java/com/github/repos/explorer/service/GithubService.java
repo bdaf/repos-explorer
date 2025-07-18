@@ -3,6 +3,7 @@ package com.github.repos.explorer.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.repos.explorer.DTO.RepositoryDTO;
+import com.github.repos.explorer.exception.GithubLoginNotFoundException;
 import com.github.repos.explorer.model.Repository;
 import com.github.repos.explorer.service.util.JsonUtil;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.github.repos.explorer.service.util.JsonUtil.mapToRepository;
@@ -25,10 +27,10 @@ public class GithubService {
 	private final HttpClient httpClient = HttpClient.newHttpClient();
 	
 	public List<Repository> findAllNotForkReposOf(String githubUsername) throws IOException, InterruptedException {
-		return findAllDTOReposOf(githubUsername).stream()
+		return new ArrayList<>(findAllDTOReposOf(githubUsername).stream()
 				.filter(r -> !r.fork())
 				.map(Repository::from)
-				.toList();
+				.toList());
 	}
 	
 	private List<RepositoryDTO> findAllDTOReposOf(String githubUsername) throws IOException, InterruptedException {
@@ -63,6 +65,9 @@ public class GithubService {
 				.build();
 
 		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+		
+		if (response.statusCode() == 404)
+			throw new GithubLoginNotFoundException("Couldn't find github login");
 		
 		return mapper.readTree(response.body());
 	}
