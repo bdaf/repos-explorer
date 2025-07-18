@@ -22,8 +22,7 @@ public class JsonUtil {
 		String ownerLogin = repoNode.get("owner").get("login").textValue();
 		boolean isFork = repoNode.get("fork").booleanValue();
 		
-		RepositoryDTO repositoryDTO = new RepositoryDTO(repositoryName, ownerLogin, branches, isFork);
-		return repositoryDTO;
+		return new RepositoryDTO(repositoryName, ownerLogin, branches, isFork);
 	}
 	
 	public static Stream<JsonNode> streamOf(JsonNode node) {

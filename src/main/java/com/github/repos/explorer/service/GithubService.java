@@ -24,14 +24,14 @@ public class GithubService {
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final HttpClient httpClient = HttpClient.newHttpClient();
 	
-	public List<Repository> findAllNotForkResultReposOf(String githubUsername) throws IOException, InterruptedException {
-		return findAllReposOf(githubUsername).stream()
+	public List<Repository> findAllNotForkReposOf(String githubUsername) throws IOException, InterruptedException {
+		return findAllDTOReposOf(githubUsername).stream()
 				.filter(r -> !r.fork())
 				.map(Repository::from)
 				.toList();
 	}
 	
-	private List<RepositoryDTO> findAllReposOf(String githubUsername) throws IOException, InterruptedException {
+	private List<RepositoryDTO> findAllDTOReposOf(String githubUsername) throws IOException, InterruptedException {
 		JsonNode jsonNode = fetchGetJson(GITHUB_API_URL + "users/" + githubUsername + "/repos");
 		
 		return streamOf(jsonNode).map(repository -> {

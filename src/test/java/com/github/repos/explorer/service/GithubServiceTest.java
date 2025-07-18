@@ -10,11 +10,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class GithubServiceTest {
 	
 	@Test
-	void findAllNotForkResultReposOf() throws IOException, InterruptedException {
+	void findAllNotForkReposOf() throws IOException, InterruptedException {
 		GithubService githubService = new GithubService();
 
 		// Number of not fork public repositories on "bdaf" account: 17
-		assertEquals(17, githubService.findAllNotForkResultReposOf("bdaf").size());
+		assertEquals(17, githubService.findAllNotForkReposOf("bdaf").size());
 		
 		
 	}
