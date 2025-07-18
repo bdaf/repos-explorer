@@ -1,4 +1,4 @@
-package com.github.repos.explorer.DTO;
+package com.github.repos.explorer.model;
 
 public record Branch(String name, String lastCommitSha) {
 }

@@ -1,8 +1,8 @@
 package com.github.repos.explorer.service.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.repos.explorer.DTO.Branch;
-import com.github.repos.explorer.DTO.Repository;
+import com.github.repos.explorer.model.Branch;
+import com.github.repos.explorer.DTO.RepositoryDTO;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -17,13 +17,13 @@ public class JsonUtil {
 		return new Branch(name, lastCommitSha);
 	}
 	
-	public static Repository mapToRepository(JsonNode repoNode, List<Branch> branches) {
+	public static RepositoryDTO mapToRepository(JsonNode repoNode, List<Branch> branches) {
 		String repositoryName = repoNode.get("name").textValue();
 		String ownerLogin = repoNode.get("owner").get("login").textValue();
 		boolean isFork = repoNode.get("fork").booleanValue();
 		
-		Repository repository = new Repository(repositoryName, ownerLogin, branches, isFork);
-		return repository;
+		RepositoryDTO repositoryDTO = new RepositoryDTO(repositoryName, ownerLogin, branches, isFork);
+		return repositoryDTO;
 	}
 	
 	public static Stream<JsonNode> streamOf(JsonNode node) {

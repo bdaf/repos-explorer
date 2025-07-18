@@ -2,9 +2,9 @@ package com.github.repos.explorer.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.repos.explorer.DTO.Repository;
+import com.github.repos.explorer.DTO.RepositoryDTO;
+import com.github.repos.explorer.model.Repository;
 import com.github.repos.explorer.service.util.JsonUtil;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -14,7 +14,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 
-import static com.github.repos.explorer.service.util.JsonUtil.*;
+import static com.github.repos.explorer.service.util.JsonUtil.mapToRepository;
+import static com.github.repos.explorer.service.util.JsonUtil.streamOf;
 
 @Service
 public class GithubService {
@@ -22,8 +23,15 @@ public class GithubService {
 	
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final HttpClient httpClient = HttpClient.newHttpClient();
-
-	public List<Repository> findAllReposOf(String githubUsername) throws IOException, InterruptedException {
+	
+	public List<Repository> findAllNotForkResultReposOf(String githubUsername) throws IOException, InterruptedException {
+		return findAllReposOf(githubUsername).stream()
+				.filter(r -> !r.fork())
+				.map(Repository::from)
+				.toList();
+	}
+	
+	private List<RepositoryDTO> findAllReposOf(String githubUsername) throws IOException, InterruptedException {
 		JsonNode jsonNode = fetchGetJson(GITHUB_API_URL + "users/" + githubUsername + "/repos");
 		
 		return streamOf(jsonNode).map(repository -> {
@@ -35,7 +43,7 @@ public class GithubService {
 		}).toList();
 	}
 	
-	private Repository createRepositoryObject(JsonNode repoNode, String githubUsername)
+	private RepositoryDTO createRepositoryObject(JsonNode repoNode, String githubUsername)
 			throws IOException, InterruptedException {
 		
 		String repositoryName = repoNode.get("name").asText();
@@ -53,13 +61,9 @@ public class GithubService {
 				.header("Accept", "application/json")
 				.GET()
 				.build();
-		
+
 		HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 		
 		return mapper.readTree(response.body());
-	}
-	
-	public List<Repository> findAllNotForkReposOf(String githubUsername) throws IOException, InterruptedException {
-		return findAllReposOf(githubUsername).stream().filter(r -> !r.fork()).toList();
 	}
 }

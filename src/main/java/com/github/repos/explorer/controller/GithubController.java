@@ -1,6 +1,6 @@
 package com.github.repos.explorer.controller;
 
-import com.github.repos.explorer.DTO.Repository;
+import com.github.repos.explorer.model.Repository;
 import com.github.repos.explorer.service.GithubService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +25,7 @@ public class GithubController {
 	@GetMapping("/{loginName}")
 	public ResponseEntity<List<Repository>> getNotForkReposOf(@PathVariable String loginName)
 			throws IOException, InterruptedException {
-		List<Repository> repos = githubService.findAllNotForkReposOf(loginName.toLowerCase());
+		List<Repository> repos = githubService.findAllNotForkResultReposOf(loginName.toLowerCase());
 		return ResponseEntity.ok(repos);
 	}
 	
