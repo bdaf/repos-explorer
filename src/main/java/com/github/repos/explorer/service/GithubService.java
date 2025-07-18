@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.repos.explorer.DTO.Repository;
 import com.github.repos.explorer.service.util.JsonUtil;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.URI;
@@ -14,6 +16,7 @@ import java.util.List;
 
 import static com.github.repos.explorer.service.util.JsonUtil.*;
 
+@Service
 public class GithubService {
 	private static final String GITHUB_API_URL = "https://api.github.com/";
 	
