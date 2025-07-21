@@ -17,7 +17,7 @@ class GithubServiceTest {
 		GithubService githubService = new GithubService();
 
 		// Number of not fork public repositories on "bdaf" account: 17
-		var repos = githubService.findAllNotForkReposOf("bdaf");
+		var repos = githubService.findAllNotForkReposOf("bdaf", token);
 		assertEquals(17, repos.size());
 		
 		

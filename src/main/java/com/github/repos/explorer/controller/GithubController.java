@@ -1,15 +1,12 @@
 package com.github.repos.explorer.controller;
 
-import com.github.repos.explorer.model.Repository;
 import com.github.repos.explorer.service.GithubService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Objects;
 
 
 @RestController
@@ -23,10 +20,13 @@ public class GithubController {
 	private final GithubService githubService;
 	
 	@GetMapping("/{loginName}")
-	public ResponseEntity<?> getNotForkReposOf(@PathVariable String loginName)
+	public ResponseEntity<?> getNotForkReposOf(
+			@PathVariable String loginName,
+			@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token)
 			throws IOException, InterruptedException {
-		List<Repository> repos = githubService.findAllNotForkReposOf(loginName.toLowerCase());
+		
+		var repos = githubService.findAllNotForkReposOf(loginName.toLowerCase(), Objects.requireNonNullElse(token, ""));
+		
 		return ResponseEntity.ok(repos);
 	}
-	
 }
