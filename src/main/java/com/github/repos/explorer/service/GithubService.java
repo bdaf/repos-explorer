@@ -16,6 +16,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import static com.github.repos.explorer.service.util.JsonUtil.mapToRepository;
 import static com.github.repos.explorer.service.util.JsonUtil.streamOf;
@@ -27,7 +28,12 @@ public class GithubService {
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final HttpClient httpClient = HttpClient.newHttpClient();
 	
+	public List<Repository> findAllNotForkReposOf(String githubUsername) throws IOException, InterruptedException {
+		return findAllNotForkReposOf(githubUsername, "");
+	}
+	
 	public List<Repository> findAllNotForkReposOf(String githubUsername, String token) throws IOException, InterruptedException {
+		token = Objects.requireNonNullElse(token, "");
 		return new ArrayList<>(findAllDTOReposOf(githubUsername, token).stream()
 				.filter(r -> !r.fork())
 				.map(Repository::from)

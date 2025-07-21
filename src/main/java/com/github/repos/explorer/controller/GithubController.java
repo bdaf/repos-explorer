@@ -6,7 +6,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Objects;
 
 
 @RestController
@@ -25,8 +24,7 @@ public class GithubController {
 			@RequestHeader(value = HttpHeaders.AUTHORIZATION, required = false) String token)
 			throws IOException, InterruptedException {
 		
-		var repos = githubService.findAllNotForkReposOf(loginName.toLowerCase(), Objects.requireNonNullElse(token, ""));
-		
+		var repos = githubService.findAllNotForkReposOf(loginName.toLowerCase(), token);
 		return ResponseEntity.ok(repos);
 	}
 }
